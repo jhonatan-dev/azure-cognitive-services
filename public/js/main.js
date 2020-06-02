@@ -3,42 +3,97 @@
 var divRespuesta = document.getElementById("divRespuesta");
 var datoTextArea = document.getElementById("text-area-keyword-extraction");
 
+function desactivarDivRespuesta() {
+  divRespuesta.style.display = "none";
+  divRespuesta.innerHTML = "";
+}
+
+function activarDivRespuesta() {
+  divRespuesta.style.display = "block";
+}
+
 function obtenerJSON(dato = "") {
   axios
     .post("/api", {
       frases: [dato],
     })
     .then(function (response) {
+      activarDivRespuesta();
       let btnCerrarDivRespuesta = document.createElement("button");
       let spanCerrarDivRespuesta = document.createElement("span");
-      let h3Texto1 = document.createElement("h3");
+      let parrafo1 = document.createElement("p");
+      let parrafo2 = document.createElement("p");
+      let parrafo3 = document.createElement("p");
+      let parrafo4 = document.createElement("p");
+      let parrafo5 = document.createElement("p");
+      let parrafo6 = document.createElement("p");
       btnCerrarDivRespuesta.setAttribute("type", "button");
       btnCerrarDivRespuesta.setAttribute("class", "close");
       btnCerrarDivRespuesta.setAttribute("data-dismiss", "alert");
       btnCerrarDivRespuesta.setAttribute("aria-label", "Cerrar");
       spanCerrarDivRespuesta.setAttribute("aria-hidden", "true");
+      btnCerrarDivRespuesta.addEventListener("click", () => {
+        desactivarDivRespuesta();
+      });
       spanCerrarDivRespuesta.innerHTML = "&times;";
-      h3Texto1.innerHTML = "Texto:";
-      divRespuesta.appendChild(btnCerrarDivRespuesta);
+      parrafo1.innerHTML = `<b>Idioma detectado</b> -> ${response.data.idiomas[0].primaryLanguage.name}`;
+      parrafo2.innerHTML = `<b>Nivel de confianza</b> -> ${
+        parseFloat(
+          response.data.idiomas[0].primaryLanguage.confidenceScore
+        ).toFixed(2) * 100
+      }%`;
+      parrafo3.innerHTML = `<b>Palabras claves detectadas</b> -> ${response.data.palabrasClaves[0].keyPhrases.toString()}`;
+      parrafo4.innerHTML = `<b>Sentimientos detectado</b> -> ${response.data.sentimientos[0].sentiment} `;
+      parrafo5.innerHTML = `<b>Nivel de confianza</b> -> Positivo: ${
+        parseFloat(
+          response.data.sentimientos[0].confidenceScores.positive
+        ).toFixed(2) * 100
+      }%  |  Neutral: ${
+        parseFloat(
+          response.data.sentimientos[0].confidenceScores.neutral
+        ).toFixed(2) * 100
+      }%  |  Negativo: ${
+        parseFloat(
+          response.data.sentimientos[0].confidenceScores.negative
+        ).toFixed(2) * 100
+      }%`;
+      parrafo6.innerHTML = `<b>Entidades detectadas</b>`;
+      let unListItems1 = document.createElement("ul");
+      unListItems1.setAttribute("class", "list-group");
+      response.data.entidades[0].relacionados[0].entities.forEach((entidad) => {
+        let listItem = document.createElement("li");
+        listItem.setAttribute(
+          "class",
+          "list-group-item d-flex justify-content-between align-items-center"
+        );
+        listItem.innerHTML = `${entidad.name}`;
+        unListItems1a.appendChild(listItem);
+      });
       btnCerrarDivRespuesta.appendChild(spanCerrarDivRespuesta);
-      divRespuesta.appendChild(h3Texto1);
-
-      console.log(response.data.idiomas[0].primaryLanguage.name);
-      console.log(response.data.idiomas[0].primaryLanguage.confidenceScore);
-      //alert(response.data);
-      //console.log(response.data);
+      divRespuesta.appendChild(btnCerrarDivRespuesta);
+      divRespuesta.appendChild(parrafo1);
+      divRespuesta.appendChild(parrafo2);
+      divRespuesta.appendChild(document.createElement("hr"));
+      divRespuesta.appendChild(parrafo3);
+      divRespuesta.appendChild(document.createElement("hr"));
+      divRespuesta.appendChild(parrafo4);
+      divRespuesta.appendChild(parrafo5);
+      divRespuesta.appendChild(document.createElement("hr"));
+      divRespuesta.appendChild(parrafo6);
     })
     .catch(function (error) {
       console.error(error);
+      alert(`Error Interno en el Servidor: ${error}`);
     });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  //divRespuesta.style.display = "none";
+  desactivarDivRespuesta();
   $("#form-keyword-extraction")
     .parsley()
     .on("form:success", function (evento) {
       this.validationResult = false;
+      desactivarDivRespuesta();
       obtenerJSON(datoTextArea.value);
     });
 });
