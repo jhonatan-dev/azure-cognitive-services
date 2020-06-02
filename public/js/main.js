@@ -57,18 +57,22 @@ function obtenerJSON(dato = "") {
           response.data.sentimientos[0].confidenceScores.negative
         ).toFixed(2) * 100
       }%`;
-      parrafo6.innerHTML = `<b>Entidades detectadas</b>`;
-      let unListItems1 = document.createElement("ul");
-      unListItems1.setAttribute("class", "list-group");
-      response.data.entidades[0].relacionados[0].entities.forEach((entidad) => {
-        let listItem = document.createElement("li");
-        listItem.setAttribute(
-          "class",
-          "list-group-item d-flex justify-content-between align-items-center"
-        );
-        listItem.innerHTML = `${entidad.name}`;
-        unListItems1a.appendChild(listItem);
-      });
+      let unListItems = document.createElement("ul");
+      unListItems.setAttribute("class", "list-group");
+      if (response.data.entidades.relacionados[0].entities != null) {
+        parrafo6.innerHTML = `<b>Entidades detectadas</b>`;
+        response.data.entidades.relacionados[0].entities.forEach((entidad) => {
+          let listItem = document.createElement("li");
+          listItem.setAttribute(
+            "class",
+            "list-group-item d-flex justify-content-between align-items-center"
+          );
+          listItem.innerHTML = `${entidad.name}`;
+          unListItems.appendChild(listItem);
+        });
+      } else {
+        parrafo6.innerHTML = `<b>Entidades detectadas</b> -> Ninguna`;
+      }
       btnCerrarDivRespuesta.appendChild(spanCerrarDivRespuesta);
       divRespuesta.appendChild(btnCerrarDivRespuesta);
       divRespuesta.appendChild(parrafo1);
@@ -78,10 +82,14 @@ function obtenerJSON(dato = "") {
       divRespuesta.appendChild(document.createElement("hr"));
       divRespuesta.appendChild(parrafo4);
       divRespuesta.appendChild(parrafo5);
-      divRespuesta.appendChild(document.createElement("hr"));
-      divRespuesta.appendChild(parrafo6);
+      if (response.data.entidades.relacionados[0].entities != null) {
+        divRespuesta.appendChild(document.createElement("hr"));
+        divRespuesta.appendChild(parrafo6);
+        divRespuesta.appendChild(unListItems);
+      }
     })
     .catch(function (error) {
+      desactivarDivRespuesta();
       console.error(error);
       alert(`Error Interno en el Servidor: ${error}`);
     });
