@@ -3,13 +3,24 @@
         <h1 class="font-weight-light">Text Analytics API</h1>
         <form id="form-keyword-extraction">
             <div class="form-group">
-                <label for="text-area-keyword-extraction">Example textarea</label>
-                <textarea class="form-control" id="text-area-keyword-extraction" rows="3" required minlength="31"
+                <label for="text-area-keyword-extraction">Ingrese el texto a analizar:</label>
+                <textarea class="form-control" id="text-area-keyword-extraction" rows="3" required minlength="21"
                     maxlength="5120"></textarea>
-                <small class="form-text text-muted">Nota: Solo se permite texto de más de 30 caracteres.</small>
+                <small class="form-text text-muted">Nota: Solo se permite texto de más de 20 caracteres.</small>
             </div>
-            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button id="btn-submit-keyword-extraction" type="submit" class="btn btn-primary">Enviar</button>
         </form>
+        <div id="divRespuesta" class="alert alert-success mt-4 p-4" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="alert-heading">Well done!</h4>
+            <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit
+                longer so that you can see how spacing within an alert works with this kind of content.</p>
+            <hr>
+            <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+        </div>
+
     </div>
 </div>
 
